@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank\\ByteBank.csproj": {}
+    "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank.csproj": {}
   },
   "projects": {
-    "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank\\ByteBank.csproj": {
+    "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank\\ByteBank.csproj",
+        "projectUniqueName": "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank.csproj",
         "projectName": "ByteBank",
-        "projectPath": "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank\\ByteBank.csproj",
+        "projectPath": "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank.csproj",
         "packagesPath": "C:\\Users\\carol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\ByteBank\\obj\\",
+        "outputPath": "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\CursoIma\\Projetos Visual Studio\\ByteBank\\ByteBank\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
