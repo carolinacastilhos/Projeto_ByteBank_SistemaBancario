@@ -19,13 +19,62 @@ namespace ByteBank
             
         }
 
-        public static void MenuManipularConta()
+        public static void ManipularConta(int indexParaLogar,List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos)
         {
-            Console.WriteLine("O que você precisa?\n");
-            Console.WriteLine("1. Detalhes da conta");
-            Console.WriteLine("2. Realizar transações");
-            Console.WriteLine("3. Sair da conta (Logout)\n");
-            Console.Write("Digite a opção desejada: ");
+            int opcaoMenuManipular;
+
+            do
+            {
+                Console.WriteLine("O que você precisa?\n");
+                Console.WriteLine("1. Detalhes da conta");
+                Console.WriteLine("2. Realizar transações");
+                Console.WriteLine("3. Sair da conta (Logout)\n");
+                Console.Write("Digite a opção desejada: ");
+
+                int.TryParse(Console.ReadLine(), out opcaoMenuManipular);
+
+                switch (opcaoMenuManipular)
+                {
+                    case 1:
+                        //DetalhesConta(contas, cpfs, titulares, chavesPix, saldos);
+                        break;
+                    case 2:
+                        MenuTransacoes();
+                        int.TryParse(Console.ReadLine(), out int opcaoMenuTransacoes);
+                        switch (opcaoMenuTransacoes)
+                        {
+                            case 1:
+                                //saque
+                                break;
+                            case 2:
+                                Deposito();
+                                break;
+                            case 3:
+                                //fazer pix
+                                break;
+                            case 4:
+                                //receber pix
+                                break;
+                            case 5:
+                                return;
+                            default:
+                                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                                Console.WriteLine("Opção inválida. Por favor, tente novamente.\n");
+                                Console.ResetColor();
+                                break;
+                        }
+                        break;
+                    case 3:
+                        return;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.WriteLine("Opção inválida. Por favor, tente novamente.\n");
+                        Console.ResetColor();
+                        break;
+                }
+
+            } while (opcaoMenuManipular != 3);
+                       
         }
 
         private static void MenuTransacoes()
@@ -130,34 +179,52 @@ namespace ByteBank
             }
         }
                 
-        public static void LoginDeAcesso(List<string> cpfs, List<string> senhas)
+        public static void LoginDeAcesso(List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos)
         {
             Console.WriteLine("Login de Acesso");
             Console.WriteLine("...............\n");
 
             int indexParaLogar;
-            int indexSenhaLogin;
+            string entrada = "n";
 
-            //do
-           // {
+              do
+              {
                 Console.Write("Digite o CPF: ");
                 string cpfParaLogar = Console.ReadLine();
                 indexParaLogar = cpfs.FindIndex(cpf => cpf == cpfParaLogar);
-                Console.Write("Digite a senha: ");
-                string senhaLogin = EsconderSenha();
-                indexSenhaLogin = senhas.FindIndex(s => s == senhaLogin);
-
-                if (indexParaLogar == -1 || indexSenhaLogin == -1)
+                                
+                if (indexParaLogar == -1)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("\nNão foi possível acessar a conta.\n" +
-                        "CPF ou senha incorretos. Por favor, tente novamente.\n");
-                    Console.WriteLine();
+                    Console.WriteLine("\nNão foi possível acessar a conta.\n");
+                    Console.Write("CPF não encontrado. Você quer tentar novamente (S/N)? ");
                     Console.ResetColor();
+                    entrada = Console.ReadLine().ToLower();
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.Write("Digite a senha: ");
+                    string senhaLogin = EsconderSenha();
+
+                    if (senhas[indexParaLogar] == senhaLogin)
+                    {
+                        Console.WriteLine("Senha válida");
+                        ManipularConta(indexParaLogar, cpfs, titulares, chavesPix, senhas, saldos); 
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.WriteLine("\nNão foi possível acessar a conta.\n");
+                        Console.Write("Senha não compatível. Você quer tentar novamente (S/N)? ");
+                        Console.ResetColor();
+                        entrada = Console.ReadLine().ToLower();
+                        Console.WriteLine();
+                    }
                 }
 
-             //}
-            //while (indexParaLogar != -1 && indexSenhaLogin != -1); //NÃO ESTÁ FAZENDO O CICLO CORRETAMENTE SE ERRA O CPF E/OU SENHA. CORRIGIR!
+              }
+              while (entrada == "s"); 
 
         }
                 
@@ -250,53 +317,12 @@ namespace ByteBank
                         ListarTodasAsContas(contas, titulares, cpfs, chavesPix);    
                         break;
                     case 3:
-                        LoginDeAcesso(cpfs, senhas); 
-                        MenuManipularConta();
-                        int.TryParse(Console.ReadLine(), out int opcaoMenuManipular);
-                        switch (opcaoMenuManipular)
-                        {
-                            case 1:
-                                //DetalhesConta(contas, cpfs, titulares, chavesPix, saldos);
-                                break;
-                            case 2:
-                                MenuTransacoes();
-                                int.TryParse(Console.ReadLine(), out int opcaoMenuTransacoes);                                
-                                switch (opcaoMenuTransacoes)
-                                {
-                                    case 1:
-                                        //saque
-                                        break;
-                                    case 2:
-                                        Deposito();
-                                        break;
-                                    case 3:
-                                        //fazer pix
-                                        break;
-                                    case 4:
-                                        // receber pix
-                                        break;
-                                    case 5:
-                                        return;
-                                    default:
-                                        Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                        Console.WriteLine("Opção inválida. Por favor, tente novamente.\n");
-                                        Console.ResetColor();
-                                        break;
-                                }
-                                break;
-                            case 3:
-                                return;
-                            default:
-                                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                Console.WriteLine("Opção inválida. Por favor, tente novamente.\n");
-                                Console.ResetColor();
-                                break;
-                        }                                             
+                        LoginDeAcesso(cpfs, titulares, chavesPix, senhas, saldos);              
                         break;
-                    case 4:
-                        LoginDeAcesso(cpfs, senhas);
-                        ExcluirConta(cpfs, titulares, chavesPix, senhas, saldos);
-                        break;
+                    //case 4:
+                      //  LoginDeAcesso(cpfs, titulares, chavesPix, senhas, saldos);
+                       // ExcluirConta(cpfs, titulares, chavesPix, senhas, saldos);
+                       // break;
                     case 5:
                         Console.WriteLine("Finalizando o programa... Até mais!");
                         break;
