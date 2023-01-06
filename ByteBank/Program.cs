@@ -10,6 +10,8 @@ namespace ByteBank
     {
         public static void MenuPrincipal()
         {
+            Console.WriteLine("Menu Principal");
+
             Console.WriteLine("O que você precisa?\n");
             Console.WriteLine("1. Adicionar nova conta");
             Console.WriteLine("2. Listar todas as contas registradas");
@@ -19,7 +21,7 @@ namespace ByteBank
             
         }
 
-        public static void ManipularConta(int indexParaLogar,List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos, List<int> contas)
+        public static void ManipularConta(int indexParaLogar,List<string> cpfs, List<string> titulares, List<string> senhas, List<double> saldos, List<int> contas)
         {
             int opcaoMenuManipular;
 
@@ -37,7 +39,7 @@ namespace ByteBank
                 switch (opcaoMenuManipular)
                 {
                     case 1:
-                        DetalhesConta(indexParaLogar, contas, cpfs, titulares, chavesPix, saldos);
+                        DetalhesConta(indexParaLogar, contas, cpfs, titulares, saldos);
                         break;
                     case 2:
                         MenuTransacoes();
@@ -51,7 +53,7 @@ namespace ByteBank
                                 Deposito(indexParaLogar, saldos);
                                 break;
                             case 3:
-                                Transferencia(indexParaLogar, cpfs, contas, titulares, chavesPix, saldos);
+                                Transferencia(indexParaLogar, cpfs, contas, titulares, saldos);
                                 break;
                             case 4:
                                 return;
@@ -63,7 +65,7 @@ namespace ByteBank
                         }
                         break;
                     case 3:
-                        ExcluirConta(indexParaLogar, cpfs, titulares, chavesPix, senhas, saldos, contas);
+                        ExcluirConta(indexParaLogar, cpfs, titulares, senhas, saldos, contas);
                         return;
                     case 4:
                         return;
@@ -88,14 +90,12 @@ namespace ByteBank
             Console.Write("Digite a opção desejada: ");
         }
 
-        public static void RegistrarNovoUsuario(List<string> titulares, List<string> cpfs, List<string> chavesPix, List<string> senhas, List<int> contas, List<double> saldos)
+        public static void RegistrarNovoUsuario(List<string> titulares, List<string> cpfs, List<string> senhas, List<int> contas, List<double> saldos)
         {
             Console.Write("Digite o nome completo: ");
             titulares.Add(Console.ReadLine());
             Console.Write("Digite o CPF: ");
             cpfs.Add(Console.ReadLine());
-            Console.Write("Adicione uma chave Pix (uma palavra ou email): ");
-            chavesPix.Add(Console.ReadLine());
             saldos.Add(0);
 
             string senha = "0";
@@ -118,7 +118,7 @@ namespace ByteBank
             while (senha != senha2);
 
             Console.ForegroundColor= ConsoleColor.Green;
-            Console.WriteLine("Senha salva.");
+            Console.WriteLine("\nSenha salva.");
             Console.ResetColor();
             
             senhas.Add(senha);
@@ -160,14 +160,14 @@ namespace ByteBank
             return pass;
         }
 
-        public static void ListarTodasAsContas(List<int> contas, List<string> titulares, List<string> cpfs, List<string> chavesPix)
+        public static void ListarTodasAsContas(List<int> contas, List<string> titulares, List<string> cpfs)
         {
             if (cpfs.Count > 0)
             {
                 for (int i = 0; i < cpfs.Count; i++)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.WriteLine($"Conta: {contas[i]} | Titular: {titulares[i]} | CPF: {cpfs[i]} | Chave Pix: {chavesPix[i]}\n");
+                    Console.WriteLine($"Conta: {contas[i]} | Titular: {titulares[i]} | CPF: {cpfs[i]}\n");
                     Console.ResetColor();
                 }
             }
@@ -179,7 +179,7 @@ namespace ByteBank
             }
         }
                 
-        public static void LoginDeAcesso(List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos, List<int>contas)
+        public static void LoginDeAcesso(List<string> cpfs, List<string> titulares, List<string> senhas, List<double> saldos, List<int>contas)
         {
             Console.WriteLine("Login de Acesso");
             Console.WriteLine("...............\n");
@@ -210,7 +210,7 @@ namespace ByteBank
                     if (senhas[indexParaLogar] == senhaLogin)
                     {
                         Console.WriteLine("Senha válida");
-                        ManipularConta(indexParaLogar, cpfs, titulares, chavesPix, senhas, saldos, contas); 
+                        ManipularConta(indexParaLogar, cpfs, titulares, senhas, saldos, contas); 
                     }
                     else
                     {
@@ -228,13 +228,13 @@ namespace ByteBank
 
         }
                 
-        public static void ExcluirConta(int indexParaLogar, List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos, List<int> contas)
+        public static void ExcluirConta(int indexParaLogar, List<string> cpfs, List<string> titulares, List<string> senhas, List<double> saldos, List<int> contas)
         {
             string entrada = "n";
 
             do
             {
-                DetalhesConta(indexParaLogar, contas, cpfs, titulares, chavesPix, saldos);
+                DetalhesConta(indexParaLogar, contas, cpfs, titulares, saldos);
 
                 Console.Write("Deseja mesmo excluir a conta (S/N)? ");
                 entrada = Console.ReadLine().ToLower();
@@ -244,7 +244,6 @@ namespace ByteBank
                     cpfs.Remove(cpfs[indexParaLogar]);
                     titulares.RemoveAt(indexParaLogar);
                     senhas.RemoveAt(indexParaLogar);
-                    chavesPix.RemoveAt(indexParaLogar);
                     saldos.RemoveAt(indexParaLogar);
                     contas.RemoveAt(indexParaLogar);
 
@@ -269,9 +268,9 @@ namespace ByteBank
                         
         }
 
-        public static void DetalhesConta(int indexParaLogar, List<int> contas, List<string> cpfs, List<string> titulares, List<string> chavesPix, List<double> saldos)
+        public static void DetalhesConta(int indexParaLogar, List<int> contas, List<string> cpfs, List<string> titulares, List<double> saldos)
         {               
-            Console.WriteLine($"Conta nº {contas[indexParaLogar]} | CPF:  {cpfs[indexParaLogar]} | Titular: {titulares[indexParaLogar]} | Chave Pix: {chavesPix[indexParaLogar]} | Saldo: R${saldos[indexParaLogar]:F2}");
+            Console.WriteLine($"Conta nº {contas[indexParaLogar]} | CPF:  {cpfs[indexParaLogar]} | Titular: {titulares[indexParaLogar]} | Saldo: R${saldos[indexParaLogar]:F2}");
         }
 
         public static void Deposito(int indexParaLogar, List<double> saldos)
@@ -340,7 +339,7 @@ namespace ByteBank
             } while (valorSaque <= 0 || valorSaque > saldos[indexParaLogar]);
         }
 
-        public static void Transferencia(int indexParaLogar, List<string> cpfs, List<int> contas, List<string> titulares, List<string> chavesPix, List<double> saldos)
+        public static void Transferencia(int indexParaLogar, List<string> cpfs, List<int> contas, List<string> titulares, List<double> saldos)
         {
             int indexContaDestino;
             string entrada = "n";
@@ -415,7 +414,6 @@ namespace ByteBank
             List<int> contas = new List<int>();
             List<string> titulares = new List<string>();
             List<string> cpfs = new List<string>();
-            List<string> chavesPix = new List<string>();
             List<string> senhas = new List<string>();
             List<double> saldos = new List<double>();
             
@@ -436,13 +434,13 @@ namespace ByteBank
                 switch (opcao)
                 {
                     case 1:
-                        RegistrarNovoUsuario(titulares, cpfs, chavesPix, senhas, contas, saldos);
+                        RegistrarNovoUsuario(titulares, cpfs, senhas, contas, saldos);
                         break;
                     case 2:
-                        ListarTodasAsContas(contas, titulares, cpfs, chavesPix);    
+                        ListarTodasAsContas(contas, titulares, cpfs);    
                         break;
                     case 3:
-                        LoginDeAcesso(cpfs, titulares, chavesPix, senhas, saldos, contas);              
+                        LoginDeAcesso(cpfs, titulares, senhas, saldos, contas);              
                         break;
                     case 4:
                         Console.WriteLine("Finalizando o programa... Até mais!");
