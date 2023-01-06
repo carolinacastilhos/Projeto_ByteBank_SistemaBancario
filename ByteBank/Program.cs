@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net.Mail;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
@@ -13,13 +14,12 @@ namespace ByteBank
             Console.WriteLine("1. Adicionar nova conta");
             Console.WriteLine("2. Listar todas as contas registradas");
             Console.WriteLine("3. Acessar/Manipular uma conta");
-            Console.WriteLine("4. Excluir uma conta");
-            Console.WriteLine("5. Finalizar programa\n");
+            Console.WriteLine("4. Finalizar programa\n");
             Console.Write("Digite a opção desejada: ");
             
         }
 
-        public static void ManipularConta(int indexParaLogar,List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos)
+        public static void ManipularConta(int indexParaLogar,List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos, List<int> contas)
         {
             int opcaoMenuManipular;
 
@@ -28,7 +28,8 @@ namespace ByteBank
                 Console.WriteLine("O que você precisa?\n");
                 Console.WriteLine("1. Detalhes da conta");
                 Console.WriteLine("2. Realizar transações");
-                Console.WriteLine("3. Sair da conta (Logout)\n");
+                Console.WriteLine("3. Excluir conta");
+                Console.WriteLine("4. Sair da conta (Logout)\n");
                 Console.Write("Digite a opção desejada: ");
 
                 int.TryParse(Console.ReadLine(), out opcaoMenuManipular);
@@ -36,7 +37,7 @@ namespace ByteBank
                 switch (opcaoMenuManipular)
                 {
                     case 1:
-                        //DetalhesConta(contas, cpfs, titulares, chavesPix, saldos);
+                        DetalhesConta(indexParaLogar, contas, cpfs, titulares, chavesPix, saldos);
                         break;
                     case 2:
                         MenuTransacoes();
@@ -44,18 +45,15 @@ namespace ByteBank
                         switch (opcaoMenuTransacoes)
                         {
                             case 1:
-                                //saque
+                                Saque(indexParaLogar, saldos);
                                 break;
                             case 2:
-                                Deposito();
+                                Deposito(indexParaLogar, saldos);
                                 break;
                             case 3:
-                                //fazer pix
+                                Transferencia(indexParaLogar, cpfs, contas, titulares, chavesPix, saldos);
                                 break;
                             case 4:
-                                //receber pix
-                                break;
-                            case 5:
                                 return;
                             default:
                                 Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -65,6 +63,9 @@ namespace ByteBank
                         }
                         break;
                     case 3:
+                        ExcluirConta(indexParaLogar, cpfs, titulares, chavesPix, senhas, saldos, contas);
+                        return;
+                    case 4:
                         return;
                     default:
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -73,7 +74,7 @@ namespace ByteBank
                         break;
                 }
 
-            } while (opcaoMenuManipular != 3);
+            } while (opcaoMenuManipular != 4);
                        
         }
 
@@ -82,9 +83,8 @@ namespace ByteBank
             Console.WriteLine("O que você precisa?\n");
             Console.WriteLine("1. Saque");
             Console.WriteLine("2. Depósito");
-            Console.WriteLine("3. Fazer Pix");
-            Console.WriteLine("4. Receber Pix");
-            Console.WriteLine("5. Voltar ao menu anterior\n");
+            Console.WriteLine("3. Transferência entre contas");
+            Console.WriteLine("4. Voltar ao menu anterior\n");
             Console.Write("Digite a opção desejada: ");
         }
 
@@ -174,12 +174,12 @@ namespace ByteBank
             else
             {
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("Não há contas registradas até o momento.");
+                Console.WriteLine("Não há contas registradas no momento.");
                 Console.ResetColor();
             }
         }
                 
-        public static void LoginDeAcesso(List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos)
+        public static void LoginDeAcesso(List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos, List<int>contas)
         {
             Console.WriteLine("Login de Acesso");
             Console.WriteLine("...............\n");
@@ -210,7 +210,7 @@ namespace ByteBank
                     if (senhas[indexParaLogar] == senhaLogin)
                     {
                         Console.WriteLine("Senha válida");
-                        ManipularConta(indexParaLogar, cpfs, titulares, chavesPix, senhas, saldos); 
+                        ManipularConta(indexParaLogar, cpfs, titulares, chavesPix, senhas, saldos, contas); 
                     }
                     else
                     {
@@ -228,57 +228,182 @@ namespace ByteBank
 
         }
                 
-        public static void ExcluirConta(List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos)
+        public static void ExcluirConta(int indexParaLogar, List<string> cpfs, List<string> titulares, List<string> chavesPix, List<string> senhas, List<double> saldos, List<int> contas)
         {
-            Console.Write("Digite o CPF: ");
-            string cpfParaDeletar = Console.ReadLine();
-            int indexParaDeletar = cpfs.FindIndex(cpf => cpf == cpfParaDeletar);
+            string entrada = "n";
 
-            if (indexParaDeletar == -1)
+            do
             {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("Não foi possível deletar esta conta");
-                Console.WriteLine("MOTIVO: Conta não encontrada.");
-                Console.ResetColor();
-            }
+                DetalhesConta(indexParaLogar, contas, cpfs, titulares, chavesPix, saldos);
 
-            cpfs.Remove(cpfParaDeletar);
-            titulares.RemoveAt(indexParaDeletar);
-            senhas.RemoveAt(indexParaDeletar);
-            chavesPix.RemoveAt(indexParaDeletar);
+                Console.Write("Deseja mesmo excluir a conta (S/N)? ");
+                entrada = Console.ReadLine().ToLower();
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nConta deletada com sucesso.\n");
-            Console.ResetColor();
+                if (entrada == "s")
+                {
+                    cpfs.Remove(cpfs[indexParaLogar]);
+                    titulares.RemoveAt(indexParaLogar);
+                    senhas.RemoveAt(indexParaLogar);
+                    chavesPix.RemoveAt(indexParaLogar);
+                    saldos.RemoveAt(indexParaLogar);
+                    contas.RemoveAt(indexParaLogar);
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nConta deletada com sucesso.\n");
+                    Console.ResetColor();
+                }
+                else if (entrada == "n")
+                {
+
+                    Console.WriteLine("Ok. Digite qualquer tecla para voltar ao menu anterior");
+                    return;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("\nCódigo digitado inválido.\n");
+                    Console.ResetColor();
+                }
+
+            } while (entrada != "s");
+                        
         }
-                
-        /*public static void DetalhesConta(List<int> contas, List<string> cpfs, List<string> titulares, List<string> chavesPix, List<double> saldos)
-        {
-                       
-            Console.WriteLine($"Conta nº {contas[index]} | CPF:  {cpfs[index]} | Titular: {titulares[index]} | Chave Pix: {chavesPix[index]} | Saldo: R${saldos[index]:F2}");
-        }*/
 
-        public static void Deposito()
-        {
-            //Console.WriteLine($"Este é o seu saldo atual: R$ {saldo:f2}");
-            Console.WriteLine();
-            Console.Write("Digite o valor que deseja depositar na sua conta: ");
-            double.TryParse(Console.ReadLine(), out double valorDeposito);
+        public static void DetalhesConta(int indexParaLogar, List<int> contas, List<string> cpfs, List<string> titulares, List<string> chavesPix, List<double> saldos)
+        {               
+            Console.WriteLine($"Conta nº {contas[indexParaLogar]} | CPF:  {cpfs[indexParaLogar]} | Titular: {titulares[indexParaLogar]} | Chave Pix: {chavesPix[indexParaLogar]} | Saldo: R${saldos[indexParaLogar]:F2}");
+        }
 
-            if (valorDeposito <= 0)
+        public static void Deposito(int indexParaLogar, List<double> saldos)
+        {
+            double valorDeposito;
+
+            do
             {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("Valor inválido. Tente outro valor");
-                Console.ResetColor();
-            }
-            else
+                Console.WriteLine();
+                Console.Write("Forneça o valor que deseja depositar na conta: ");
+                double.TryParse(Console.ReadLine(), out valorDeposito);
+
+
+                if (valorDeposito <= 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("Valor inválido. Tente outro valor");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Depósito realizado com sucesso!\n");
+                    Console.ResetColor();
+
+                    saldos[indexParaLogar] += valorDeposito;
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Saldo atual após o depósito: R$ {saldos[indexParaLogar]:f2}");
+                    Console.ResetColor();
+                }
+
+            } while (valorDeposito <= 0);
+        }
+
+        public static void Saque(int indexParaLogar, List<double> saldos)
+        {
+            double valorSaque;
+
+            do
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Depósito realizado com sucesso!");
-                Console.ResetColor();
-            }
-            
-            //Console.WriteLine($"Saldo atual após o depósito: R$ {(saldo + valorDeposito):f2}");
+                Console.WriteLine();
+                Console.Write("Forneça o valor que deseja sacar da conta: ");
+                double.TryParse(Console.ReadLine(), out valorSaque);
+
+
+                if (valorSaque <= 0 || valorSaque > saldos[indexParaLogar])
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("Valor inválido. Tente outro valor");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Saque realizado com sucesso!\n");
+                    Console.ResetColor();
+
+                    saldos[indexParaLogar] -= valorSaque;
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Saldo atual após saque: R$ {saldos[indexParaLogar]:f2}");
+                    Console.ResetColor();
+                }
+
+            } while (valorSaque <= 0 || valorSaque > saldos[indexParaLogar]);
+        }
+
+        public static void Transferencia(int indexParaLogar, List<string> cpfs, List<int> contas, List<string> titulares, List<string> chavesPix, List<double> saldos)
+        {
+            int indexContaDestino;
+            string entrada = "n";
+
+            do
+            {
+                Console.WriteLine();
+                Console.Write("Forneça o CPF da conta na qual deseja realizar a transferência: ");
+                string cpfContaDestino = Console.ReadLine();
+                indexContaDestino = cpfs.FindIndex(cpf => cpf == cpfContaDestino);
+
+                if (indexContaDestino == -1)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("\nConta de destino não encontrada.\n");
+                    //Console.Write("Você quer tentar novamente (S/N)? ");
+                    Console.ResetColor();
+                    //entrada = Console.ReadLine().ToLower();
+                    Console.WriteLine();
+                }
+                else if (indexContaDestino == indexParaLogar)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("\nContas equivalentes.\n");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Conta Destino encontrada:\n" +
+                        $"Conta nº {contas[indexContaDestino]} | CPF:  {cpfs[indexContaDestino]} | Titular: {titulares[indexContaDestino]}");
+                    Console.ResetColor();
+                }
+
+            }while(indexContaDestino == -1 || indexContaDestino == indexParaLogar);
+
+            double valorTransferencia;
+
+            do
+            {
+                Console.Write("Digite o valor que deseja transferir para a Conta de destino: ");
+                double.TryParse(Console.ReadLine(), out valorTransferencia);
+
+                if (valorTransferencia <= 0 || valorTransferencia > saldos[indexParaLogar])
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("Valor inválido. Tente outro valor");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    saldos[indexParaLogar] -= valorTransferencia;
+                    saldos[indexContaDestino] += valorTransferencia;
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Transferência realizada com sucesso!\n");
+                    Console.WriteLine($"Saldo atual Conta Remetente após transferência: R$ {saldos[indexParaLogar]:f2}\n");
+                    Console.WriteLine($"Saldo atual Conta Destino após transferência: R$ {saldos[indexContaDestino]:f2}\n");
+                    Console.ResetColor();
+                }
+
+            } while (valorTransferencia <= 0 || valorTransferencia > saldos[indexParaLogar]);
+               
         }
 
         public static void Main(string[] args)
@@ -317,13 +442,9 @@ namespace ByteBank
                         ListarTodasAsContas(contas, titulares, cpfs, chavesPix);    
                         break;
                     case 3:
-                        LoginDeAcesso(cpfs, titulares, chavesPix, senhas, saldos);              
+                        LoginDeAcesso(cpfs, titulares, chavesPix, senhas, saldos, contas);              
                         break;
-                    //case 4:
-                      //  LoginDeAcesso(cpfs, titulares, chavesPix, senhas, saldos);
-                       // ExcluirConta(cpfs, titulares, chavesPix, senhas, saldos);
-                       // break;
-                    case 5:
+                    case 4:
                         Console.WriteLine("Finalizando o programa... Até mais!");
                         break;
                     default:
@@ -335,9 +456,11 @@ namespace ByteBank
                 }
                                 
             }
-            while (opcao != 5);
+            while (opcao != 4);
 
-            
+            //Console.WriteLine("\nPressione qualquer tecla para continuar...");
+            //Console.ReadKey();
+           // Console.Clear();
 
 
         }
